@@ -1,0 +1,59 @@
+{
+  "session_id": "f280853b-dcb7-42dd-998e-2922c177087c",
+  "mode": "demo",
+  "message": "오늘의 마음에 맞춰 골랐어요. 잠시 일상을 내려놓고 나만의 영화 시간을 가져보세요.",
+  "preferences": {
+    "mood": "힐링",
+    "genres": [],
+    "company": "혼자",
+    "max_minutes": 105,
+    "providers": [],
+    "avoid": []
+  },
+  "recommendations": [
+    {
+      "movie_id": "little-forest",
+      "title": "리틀 포레스트",
+      "year": 2018,
+      "runtime": 103,
+      "genres": [
+        "드라마"
+      ],
+      "synopsis": "도시에서 지친 혜원이 고향으로 돌아와 사계절의 음식과 친구들 속에서 자신의 리듬을 되찾는다.",
+      "reason": "힐링을 원하는 오늘, 계절과 요리의 느긋한 리듬이 휴식과 회복의 정서로 이어진다.",
+      "tip": "따뜻한 차와 함께 음식 소리와 계절의 변화를 느껴보세요.",
+      "evidence": "계절과 요리의 느긋한 리듬이 휴식과 회복의 정서로 이어진다.",
+      "poster": null,
+      "rating": null,
+      "providers": [],
+      "watch_url": null,
+      "availability": "OTT 정보 미확인"
+    },
+    {
+      "movie_id": "paddington",
+      "title": "패딩턴 2",
+      "year": 2017,
+      "runtime": 104,
+      "genres": [
+        "코미디",
+        "가족"
+      ],
+      "synopsis": "런던의 곰 패딩턴이 이모에게 줄 선물을 준비하다 누명을 쓰고 이웃들의 도움으로 진실을 찾아간다.",
+      "reason": "힐링을 원하는 오늘, 다정함과 발랄한 소동이 중심인 가족 코미디다.",
+      "tip": "밝은 조명과 달콤한 간식으로 작은 영화관을 만들어 보세요.",
+      "evidence": "다정함과 발랄한 소동이 중심인 가족 코미디다.",
+      "poster": null,
+      "rating": null,
+      "providers": [],
+      "watch_url": null,
+      "availability": "OTT 정보 미확인"
+    }
+  ],
+  "steps": [
+    "감정·상황 및 이전 대화 조건 분석 완료",
+    "데모 규칙 검색 · 조건에 맞는 후보 3편",
+    "OTT 가용성 미확인 (TMDB 키 없음)",
+    "맞춤 큐레이션 완료"
+  ],
+  "warnings": []
+}
