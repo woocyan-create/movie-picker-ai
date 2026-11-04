@@ -1,0 +1,28 @@
+{
+  "demo": {
+    "status": "passed",
+    "mode": "demo",
+    "movies": [
+      "In Bruges",
+      "Finding Nemo"
+    ],
+    "tool_trace": [
+      {
+        "tool": "search_imdb",
+        "status": "ok",
+        "count": 60
+      },
+      {
+        "tool": "retrieve_knowledge",
+        "status": "ok",
+        "count": 12
+      }
+    ],
+    "dataset": 10000
+  },
+  "azure": {
+    "status": "failed",
+    "error_type": "PermissionDeniedError",
+    "http_status": 403
+  }
+}

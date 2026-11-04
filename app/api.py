@@ -11,7 +11,10 @@ logger = logging.getLogger(__name__)
 @asynccontextmanager
 async def lifespan(app):
     app.state.service = MovieService(Settings())
-    yield
+    try:
+        yield
+    finally:
+        app.state.service.close()
 
 
 app = FastAPI(title="Movie Picker API", lifespan=lifespan)
@@ -19,7 +22,8 @@ app = FastAPI(title="Movie Picker API", lifespan=lifespan)
 
 @app.get("/health")
 def health():
-    return {"status": "ok", "mode": app.state.service.settings.app_mode}
+    service = app.state.service
+    return {"status": "ok", "mode": service.settings.app_mode, "source": service.settings.movie_source, "dataset": service.status()}
 
 
 @app.post("/chat", response_model=ChatResponse)

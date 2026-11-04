@@ -8,7 +8,7 @@ class Preferences(BaseModel):
     genres: list[str] = Field(default_factory=list)
     company: str = ""
     max_minutes: int | None = Field(default=None, ge=1, le=600)
-    providers: list[str] = Field(default_factory=list)
+    title_query: str = Field(default="", max_length=200)
     avoid: list[str] = Field(default_factory=list)
 
 
@@ -16,7 +16,6 @@ class ChatRequest(BaseModel):
     session_id: UUID
     message: str = Field(min_length=1, max_length=3000)
     max_minutes: int | None = Field(default=None, ge=1, le=600)
-    providers: list[str] = Field(default_factory=list, max_length=10)
 
     @field_validator("message")
     @classmethod
@@ -29,8 +28,8 @@ class ChatRequest(BaseModel):
 class Recommendation(BaseModel):
     movie_id: str
     title: str
-    year: int
-    runtime: int
+    year: int | None
+    runtime: int | None
     genres: list[str]
     synopsis: str
     reason: str
@@ -38,9 +37,10 @@ class Recommendation(BaseModel):
     evidence: str
     poster: str | None = None
     rating: float | None = None
-    providers: list[str] = Field(default_factory=list)
-    watch_url: str | None = None
-    availability: str = "OTT 정보 미확인"
+    votes: int | None = None
+    source: str
+    source_url: str | None = None
+    evidence_chunks: list[str] = Field(default_factory=list)
 
 
 class ChatResponse(BaseModel):
@@ -51,6 +51,8 @@ class ChatResponse(BaseModel):
     recommendations: list[Recommendation] = Field(default_factory=list)
     steps: list[str] = Field(default_factory=list)
     warnings: list[str] = Field(default_factory=list)
+    source: str = "imdb"
+    tool_trace: list[dict] = Field(default_factory=list)
 
 
 class Feedback(BaseModel):

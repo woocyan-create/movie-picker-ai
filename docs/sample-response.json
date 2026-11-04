@@ -1,59 +1,87 @@
 {
-  "session_id": "f280853b-dcb7-42dd-998e-2922c177087c",
+  "session_id": "d34541b4-d668-451a-91fa-7ec7f764e024",
   "mode": "demo",
-  "message": "오늘의 마음에 맞춰 골랐어요. 잠시 일상을 내려놓고 나만의 영화 시간을 가져보세요.",
+  "message": "검색된 영화의 장르와 상영 시간을 바탕으로 골랐어요. IMDb에서 작품 정보를 더 살펴보세요.",
   "preferences": {
-    "mood": "힐링",
-    "genres": [],
-    "company": "혼자",
-    "max_minutes": 105,
-    "providers": [],
-    "avoid": []
+    "mood": "웃음",
+    "genres": [
+      "코미디"
+    ],
+    "company": "",
+    "max_minutes": 110,
+    "title_query": "",
+    "avoid": [
+      "공포"
+    ]
   },
   "recommendations": [
     {
-      "movie_id": "little-forest",
-      "title": "리틀 포레스트",
-      "year": 2018,
-      "runtime": 103,
+      "movie_id": "tt0120912",
+      "title": "Men in Black II",
+      "year": 2002,
+      "runtime": 88,
       "genres": [
-        "드라마"
+        "액션",
+        "모험",
+        "코미디"
       ],
-      "synopsis": "도시에서 지친 혜원이 고향으로 돌아와 사계절의 음식과 친구들 속에서 자신의 리듬을 되찾는다.",
-      "reason": "힐링을 원하는 오늘, 계절과 요리의 느긋한 리듬이 휴식과 회복의 정서로 이어진다.",
-      "tip": "따뜻한 차와 함께 음식 소리와 계절의 변화를 느껴보세요.",
-      "evidence": "계절과 요리의 느긋한 리듬이 휴식과 회복의 정서로 이어진다.",
+      "synopsis": "IMDb 무료 데이터셋에는 줄거리가 포함되어 있지 않습니다.",
+      "reason": "액션, 모험, 코미디 장르의 작품으로 관람 조건에 맞습니다. IMDb 메타데이터: Men in Black II (2002), 장르 액션, 모험, 코미디, 상영 시간 88분, 평점 6.2/10, 투표 438,275개.",
+      "tip": "편안한 자리를 준비하고 집중할 시간을 확보해 보세요.",
+      "evidence": "Title: Men in Black II. Original title: Men in Black II. Year: 2002. Runtime: 88 minutes. Genres: 액션, 모험, 코미디. IMDb rating: 6.2. Votes: 438275. IMDb 메타데이터: Men in Black II (2002), 장르 액션, 모험, 코미디, 상영 시간 88분, 평점 6.2/10, 투표 438,275개. Source: IMDb non-commercial datasets. URL: https://www.imdb.com/title/tt0120912/.",
       "poster": null,
-      "rating": null,
-      "providers": [],
-      "watch_url": null,
-      "availability": "OTT 정보 미확인"
+      "rating": 6.2,
+      "votes": 438275,
+      "source": "IMDb non-commercial datasets",
+      "source_url": "https://www.imdb.com/title/tt0120912/",
+      "evidence_chunks": [
+        "tt0120912:0:e574eb3db57320c6"
+      ]
     },
     {
-      "movie_id": "paddington",
-      "title": "패딩턴 2",
-      "year": 2017,
-      "runtime": 104,
+      "movie_id": "tt0103639",
+      "title": "Aladdin",
+      "year": 1992,
+      "runtime": 90,
       "genres": [
-        "코미디",
-        "가족"
+        "모험",
+        "애니메이션",
+        "코미디"
       ],
-      "synopsis": "런던의 곰 패딩턴이 이모에게 줄 선물을 준비하다 누명을 쓰고 이웃들의 도움으로 진실을 찾아간다.",
-      "reason": "힐링을 원하는 오늘, 다정함과 발랄한 소동이 중심인 가족 코미디다.",
-      "tip": "밝은 조명과 달콤한 간식으로 작은 영화관을 만들어 보세요.",
-      "evidence": "다정함과 발랄한 소동이 중심인 가족 코미디다.",
+      "synopsis": "IMDb 무료 데이터셋에는 줄거리가 포함되어 있지 않습니다.",
+      "reason": "모험, 애니메이션, 코미디 장르의 작품으로 관람 조건에 맞습니다. IMDb 메타데이터: Aladdin (1992), 장르 모험, 애니메이션, 코미디, 상영 시간 90분, 평점 8.0/10, 투표 507,612개.",
+      "tip": "편안한 자리를 준비하고 집중할 시간을 확보해 보세요.",
+      "evidence": "Title: Aladdin. Original title: Aladdin. Year: 1992. Runtime: 90 minutes. Genres: 모험, 애니메이션, 코미디. IMDb rating: 8.0. Votes: 507612. IMDb 메타데이터: Aladdin (1992), 장르 모험, 애니메이션, 코미디, 상영 시간 90분, 평점 8.0/10, 투표 507,612개. Source: IMDb non-commercial datasets. URL: https://www.imdb.com/title/tt0103639/.",
       "poster": null,
-      "rating": null,
-      "providers": [],
-      "watch_url": null,
-      "availability": "OTT 정보 미확인"
+      "rating": 8.0,
+      "votes": 507612,
+      "source": "IMDb non-commercial datasets",
+      "source_url": "https://www.imdb.com/title/tt0103639/",
+      "evidence_chunks": [
+        "tt0103639:0:a8d0cbfd754682f7"
+      ]
     }
   ],
   "steps": [
-    "감정·상황 및 이전 대화 조건 분석 완료",
-    "데모 규칙 검색 · 조건에 맞는 후보 3편",
-    "OTT 가용성 미확인 (TMDB 키 없음)",
-    "맞춤 큐레이션 완료"
+    "감정·조건 분석 및 SQLite 대화 메모리 조회",
+    "ReAct: search_imdb → ok (60)",
+    "ReAct: retrieve_knowledge → ok (12)",
+    "청크 인용·제약 검증 및 큐레이션 완료"
   ],
-  "warnings": []
+  "warnings": [
+    "데모는 규칙 기반 도구 선택과 어휘 해시 임베딩을 사용합니다. LLM Tool Calling·의미 기반 RAG는 Live 모드에서 동작합니다."
+  ],
+  "source": "imdb",
+  "tool_trace": [
+    {
+      "tool": "search_imdb",
+      "status": "ok",
+      "count": 60
+    },
+    {
+      "tool": "retrieve_knowledge",
+      "status": "ok",
+      "count": 12
+    }
+  ]
 }

@@ -1,2 +1,7 @@
-..........                                                               [100%]
-10 passed in 4.10s
+...............                                                          [100%]
+15 passed in 10.73s
+
+Actual HTTP /health + /chat against imported 10,000-film IMDb database: PASS
+Chrome home + recommendation screenshots: PASS
+pip check: No broken requirements found.
+Azure Live attempt: HTTP 403 PermissionDeniedError (not verified).

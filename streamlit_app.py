@@ -26,7 +26,8 @@ h2,h3 {letter-spacing: -.03em;}
 div[data-testid="stBottom"]>div {background: #101014;}
 </style>""", unsafe_allow_html=True)
 
-if "session_id" not in st.session_state:
+if st.session_state.get("schema_version") != 2:
+    st.session_state.schema_version = 2
     st.session_state.session_id = str(uuid4())
     st.session_state.messages = []
 
@@ -37,7 +38,8 @@ def render_result(result, turn):
     tags = [prefs["mood"], *prefs["genres"], prefs["company"]]
     if prefs.get("max_minutes"):
         tags.append(f"{prefs['max_minutes']}분 이내")
-    tags += prefs["providers"]
+    if prefs.get("title_query"):
+        tags.append(prefs["title_query"])
     if any(tags):
         st.caption("  ·  ".join(t for t in tags if t))
     for warning in result["warnings"]:
@@ -50,22 +52,21 @@ def render_result(result, turn):
                     st.image(movie["poster"], width=260)
                 else:
                     st.markdown('<div class="poster-placeholder">🎞</div>', unsafe_allow_html=True)
-                st.caption(f"{movie['year']}  /  {' · '.join(movie['genres'])}  /  {movie['runtime']}분")
+                st.caption(f"{movie['year'] or '연도 미상'}  /  {' · '.join(movie['genres'])}  /  {str(movie['runtime']) + '분' if movie['runtime'] else '상영 시간 미상'}")
                 st.subheader(movie["title"])
                 if movie.get("rating") is not None:
-                    st.caption(f"TMDB 평점 {movie['rating']:.1f} / 10")
+                    st.caption(f"IMDb 평점 {movie['rating']:.1f} / 10 · {movie.get('votes') or 0:,}표")
                 st.write(movie["synopsis"])
                 st.markdown("**지금 이 영화인 이유**")
                 st.write(movie["reason"])
                 st.info("감상 팁 · " + movie["tip"])
-                st.caption(movie["availability"])
-                if movie["providers"]:
-                    st.caption("구독 · " + " · ".join(movie["providers"]))
-                if movie.get("watch_url"):
-                    st.link_button("시청 정보 확인 ↗", movie["watch_url"])
+                st.caption(movie["source"])
+                if movie.get("source_url"):
+                    st.link_button("IMDb에서 작품 보기 ↗", movie["source_url"])
                 with st.expander("추천 근거 보기"):
                     st.write(movie["evidence"])
-                    st.caption("출처: 프로젝트의 자체 작성 영화 큐레이션 데이터. OTT는 TMDB 실시간 조회 결과이며 지역·요금제에 따라 달라질 수 있습니다.")
+                    st.caption("인용 청크: " + " · ".join(movie.get("evidence_chunks", [])))
+                    st.caption("IMDb 공식 데이터셋의 메타데이터 검색 결과입니다. 무료 데이터에는 줄거리·리뷰·포스터·스트리밍 제공처가 포함되지 않습니다.")
                 with st.expander("이 영화, 어땠나요?"):
                     form_key = f"feedback-{turn}-{movie['movie_id']}"
                     with st.form(form_key):
@@ -95,18 +96,24 @@ with st.sidebar:
         st.rerun()
     st.markdown("### 오늘의 관람 조건")
     time_limit = st.select_slider("얼마나 여유가 있나요?", options=["상관없음", "90분", "120분", "150분", "180분"], value="상관없음")
-    providers = st.multiselect("이용하는 OTT", ["넷플릭스", "왓챠", "티빙", "웨이브", "디즈니", "쿠팡플레이"])
-    st.caption("선택한 조건을 우선 적용해요. 대화에서 말한 조건은 다음 대화에도 기억합니다. 초기화하려면 새 이야기를 시작하세요.")
+    st.caption("IMDb 영화 데이터에서 찾아드려요. OTT 선택은 필요하지 않습니다. 대화 조건을 초기화하려면 새 이야기를 시작하세요.")
     st.divider()
     try:
         health = httpx.get(f"{API_URL}/health", timeout=2)
         health.raise_for_status()
-        mode = health.json()["mode"]
+        status = health.json()
+        mode = status["mode"]
         st.caption("● DEMO · 규칙 기반 추천" if mode == "demo" else "● LIVE · AI 큐레이션")
+        dataset = status.get("dataset", {})
+        source_label = "IMDb" if status.get("source") == "imdb" else "샘플 카탈로그"
+        st.caption(f"{source_label} · {dataset.get('count', 0):,}편")
+        if not dataset.get("ready", True):
+            st.warning("IMDb 데이터를 먼저 준비해 주세요.")
+            st.code("python -m scripts.import_imdb", language="bash")
     except (httpx.HTTPError, ValueError, KeyError):
         st.caption("○ 추천 서버 연결 대기")
-    st.caption("데모: API 키 없이 체험\n\nLive: AI 감정 분석 + 의미 검색")
-    st.caption("감상평은 로컬 DB에 저장됩니다. 대화 맥락은 서버를 재시작하면 초기화됩니다.")
+    st.caption("데모: 규칙·어휘 검색 체험\n\nLive: AI 감정 분석 + 도구 선택 + 의미 검색")
+    st.caption("감상평과 세션별 대화 맥락은 로컬 DB에 저장됩니다.")
 
 st.markdown('<div class="eyebrow">A LITTLE CINEMA, JUST FOR YOU</div>', unsafe_allow_html=True)
 st.markdown('<h1>오늘의 마음에,<br><span class="highlight">딱 맞는 영화.</span></h1>', unsafe_allow_html=True)
@@ -136,7 +143,7 @@ if prompt:
     with st.chat_message("assistant", avatar="🎬"):
         with st.spinner("당신의 마음에 어울리는 영화를 고르고 있어요…"):
             try:
-                response = httpx.post(f"{API_URL}/chat", json={"session_id": st.session_state.session_id, "message": prompt, "max_minutes": None if time_limit == "상관없음" else int(time_limit[:-1]), "providers": providers}, timeout=180)
+                response = httpx.post(f"{API_URL}/chat", json={"session_id": st.session_state.session_id, "message": prompt, "max_minutes": None if time_limit == "상관없음" else int(time_limit[:-1])}, timeout=300)
                 response.raise_for_status()
                 result = response.json()
             except (httpx.HTTPError, ValueError):
@@ -147,4 +154,4 @@ if prompt:
 
 st.divider()
 st.caption("MOVIE PICKER  /  마음을 듣고, 영화를 고릅니다.")
-st.caption("영화 메타데이터·시청 정보 제공: TMDB / JustWatch. This product uses the TMDB API but is not endorsed or certified by TMDB.")
+st.caption("영화 정보 출처: IMDb 공식 비상업용 데이터셋 · 개인·비상업적 학습용 · IMDb와 제휴하거나 인증받은 서비스가 아닙니다.")
