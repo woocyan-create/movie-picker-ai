@@ -1,47 +1,45 @@
 {
-  "session_id": "d34541b4-d668-451a-91fa-7ec7f764e024",
+  "session_id": "f8fcda82-e3f0-41b4-b194-340e9f85fc3d",
   "mode": "demo",
-  "message": "검색된 영화의 장르와 상영 시간을 바탕으로 골랐어요. IMDb에서 작품 정보를 더 살펴보세요.",
+  "message": "IMDb에서 관람 조건에 맞는 영화를 골랐어요. 마음에 드는 장르나 기분을 알려주시면 다음 추천에 반영할게요.",
   "preferences": {
     "mood": "웃음",
     "genres": [
       "코미디"
     ],
     "company": "",
-    "max_minutes": 110,
+    "max_minutes": 90,
     "title_query": "",
-    "avoid": [
-      "공포"
-    ]
+    "avoid": []
   },
   "recommendations": [
     {
-      "movie_id": "tt0120912",
-      "title": "Men in Black II",
-      "year": 2002,
-      "runtime": 88,
+      "movie_id": "tt0114709",
+      "title": "Toy Story",
+      "year": 1995,
+      "runtime": 81,
       "genres": [
-        "액션",
         "모험",
+        "애니메이션",
         "코미디"
       ],
       "synopsis": "IMDb 무료 데이터셋에는 줄거리가 포함되어 있지 않습니다.",
-      "reason": "액션, 모험, 코미디 장르의 작품으로 관람 조건에 맞습니다. IMDb 메타데이터: Men in Black II (2002), 장르 액션, 모험, 코미디, 상영 시간 88분, 평점 6.2/10, 투표 438,275개.",
+      "reason": "모험, 애니메이션, 코미디 장르의 작품으로 관람 조건에 맞습니다. IMDb 메타데이터: Toy Story (1995), 장르 모험, 애니메이션, 코미디, 상영 시간 81분, 평점 8.3/10, 투표 1,205,747개.",
       "tip": "편안한 자리를 준비하고 집중할 시간을 확보해 보세요.",
-      "evidence": "Title: Men in Black II. Original title: Men in Black II. Year: 2002. Runtime: 88 minutes. Genres: 액션, 모험, 코미디. IMDb rating: 6.2. Votes: 438275. IMDb 메타데이터: Men in Black II (2002), 장르 액션, 모험, 코미디, 상영 시간 88분, 평점 6.2/10, 투표 438,275개. Source: IMDb non-commercial datasets. URL: https://www.imdb.com/title/tt0120912/.",
+      "evidence": "Title: Toy Story. Original title: Toy Story. Year: 1995. Runtime: 81 minutes. Genres: 모험, 애니메이션, 코미디. IMDb rating: 8.3. Votes: 1205747. IMDb 메타데이터: Toy Story (1995), 장르 모험, 애니메이션, 코미디, 상영 시간 81분, 평점 8.3/10, 투표 1,205,747개. Source: IMDb non-commercial datasets. URL: https://www.imdb.com/title/tt0114709/.",
       "poster": null,
-      "rating": 6.2,
-      "votes": 438275,
+      "rating": 8.3,
+      "votes": 1205747,
       "source": "IMDb non-commercial datasets",
-      "source_url": "https://www.imdb.com/title/tt0120912/",
+      "source_url": "https://www.imdb.com/title/tt0114709/",
       "evidence_chunks": [
-        "tt0120912:0:e574eb3db57320c6"
+        "tt0114709:0:0f9bfd54aa5a799f"
       ]
     },
     {
-      "movie_id": "tt0103639",
-      "title": "Aladdin",
-      "year": 1992,
+      "movie_id": "tt0126029",
+      "title": "Shrek",
+      "year": 2001,
       "runtime": 90,
       "genres": [
         "모험",
@@ -49,28 +47,26 @@
         "코미디"
       ],
       "synopsis": "IMDb 무료 데이터셋에는 줄거리가 포함되어 있지 않습니다.",
-      "reason": "모험, 애니메이션, 코미디 장르의 작품으로 관람 조건에 맞습니다. IMDb 메타데이터: Aladdin (1992), 장르 모험, 애니메이션, 코미디, 상영 시간 90분, 평점 8.0/10, 투표 507,612개.",
+      "reason": "모험, 애니메이션, 코미디 장르의 작품으로 관람 조건에 맞습니다. IMDb 메타데이터: Shrek (2001), 장르 모험, 애니메이션, 코미디, 상영 시간 90분, 평점 7.9/10, 투표 825,605개.",
       "tip": "편안한 자리를 준비하고 집중할 시간을 확보해 보세요.",
-      "evidence": "Title: Aladdin. Original title: Aladdin. Year: 1992. Runtime: 90 minutes. Genres: 모험, 애니메이션, 코미디. IMDb rating: 8.0. Votes: 507612. IMDb 메타데이터: Aladdin (1992), 장르 모험, 애니메이션, 코미디, 상영 시간 90분, 평점 8.0/10, 투표 507,612개. Source: IMDb non-commercial datasets. URL: https://www.imdb.com/title/tt0103639/.",
+      "evidence": "Title: Shrek. Original title: Shrek. Year: 2001. Runtime: 90 minutes. Genres: 모험, 애니메이션, 코미디. IMDb rating: 7.9. Votes: 825605. IMDb 메타데이터: Shrek (2001), 장르 모험, 애니메이션, 코미디, 상영 시간 90분, 평점 7.9/10, 투표 825,605개. Source: IMDb non-commercial datasets. URL: https://www.imdb.com/title/tt0126029/.",
       "poster": null,
-      "rating": 8.0,
-      "votes": 507612,
+      "rating": 7.9,
+      "votes": 825605,
       "source": "IMDb non-commercial datasets",
-      "source_url": "https://www.imdb.com/title/tt0103639/",
+      "source_url": "https://www.imdb.com/title/tt0126029/",
       "evidence_chunks": [
-        "tt0103639:0:a8d0cbfd754682f7"
+        "tt0126029:0:33b33b099fac2490"
       ]
     }
   ],
   "steps": [
     "감정·조건 분석 및 SQLite 대화 메모리 조회",
     "ReAct: search_imdb → ok (60)",
-    "ReAct: retrieve_knowledge → ok (12)",
+    "ReAct: retrieve_knowledge → ok (60)",
     "청크 인용·제약 검증 및 큐레이션 완료"
   ],
-  "warnings": [
-    "데모는 규칙 기반 도구 선택과 어휘 해시 임베딩을 사용합니다. LLM Tool Calling·의미 기반 RAG는 Live 모드에서 동작합니다."
-  ],
+  "warnings": [],
   "source": "imdb",
   "tool_trace": [
     {
@@ -81,7 +77,7 @@
     {
       "tool": "retrieve_knowledge",
       "status": "ok",
-      "count": 12
+      "count": 60
     }
   ]
 }

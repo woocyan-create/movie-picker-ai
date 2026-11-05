@@ -24,3 +24,7 @@ def test_chat_cards_links_feedback_and_no_ott(imdb_directory, monkeypatch):
         assert page.success[0].value == "감상을 저장했어요."
         next(b for b in page.button if "새로운 영화" in b.label).click().run()
         assert not page.chat_message
+        page.chat_input[0].set_value("영화를 찾아줘").run()
+        assert not page.exception
+        assert len(page.subheader) == 2
+        assert not page.warning

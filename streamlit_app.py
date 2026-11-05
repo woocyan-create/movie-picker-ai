@@ -26,8 +26,8 @@ h2,h3 {letter-spacing: -.03em;}
 div[data-testid="stBottom"]>div {background: #101014;}
 </style>""", unsafe_allow_html=True)
 
-if st.session_state.get("schema_version") != 2:
-    st.session_state.schema_version = 2
+if st.session_state.get("schema_version") != 3:
+    st.session_state.schema_version = 3
     st.session_state.session_id = str(uuid4())
     st.session_state.messages = []
 
@@ -103,7 +103,7 @@ with st.sidebar:
         health.raise_for_status()
         status = health.json()
         mode = status["mode"]
-        st.caption("● DEMO · 규칙 기반 추천" if mode == "demo" else "● LIVE · AI 큐레이션")
+        st.caption("● DEMO · API 키 없이 영화 추천" if mode == "demo" else "● LIVE · AI 큐레이션")
         dataset = status.get("dataset", {})
         source_label = "IMDb" if status.get("source") == "imdb" else "샘플 카탈로그"
         st.caption(f"{source_label} · {dataset.get('count', 0):,}편")
@@ -112,7 +112,8 @@ with st.sidebar:
             st.code("python -m scripts.import_imdb", language="bash")
     except (httpx.HTTPError, ValueError, KeyError):
         st.caption("○ 추천 서버 연결 대기")
-    st.caption("데모: 규칙·어휘 검색 체험\n\nLive: AI 감정 분석 + 도구 선택 + 의미 검색")
+    with st.expander("추천 방식 안내"):
+        st.caption("데모에서도 IMDb 영화 추천을 사용할 수 있어요. 장르·시간·투표 수와 검색 근거를 활용합니다. Live는 LLM 도구 선택과 의미 임베딩을 추가로 사용합니다.")
     st.caption("감상평과 세션별 대화 맥락은 로컬 DB에 저장됩니다.")
 
 st.markdown('<div class="eyebrow">A LITTLE CINEMA, JUST FOR YOU</div>', unsafe_allow_html=True)

@@ -1,7 +1,9 @@
-...............                                                          [100%]
-15 passed in 10.73s
+.....................                                                    [100%]
+21 passed in 13.89s
 
-Actual HTTP /health + /chat against imported 10,000-film IMDb database: PASS
-Chrome home + recommendation screenshots: PASS
-pip check: No broken requirements found.
-Azure Live attempt: HTTP 403 PermissionDeniedError (not verified).
+2026-11-05: Actual HTTP requests against the 10,000-film IMDb database passed:
+- Generic Korean movie recommendation request
+- Generic Korean movie search request
+- Unspecified movie choice request
+- 90-minute comedy request with constraints enforced
+All returned recommendations with IMDb links and evidence, without demo warning banners.

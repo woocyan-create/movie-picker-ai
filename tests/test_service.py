@@ -79,6 +79,25 @@ def test_title_lookup_without_mood(service):
     assert result.recommendations[0].movie_id == "tt0000001"
 
 
+@pytest.mark.parametrize("message", ["영화 추천해줘", "영화를 찾아줘", "영화를 찯아줘", "추천해줘", "아무 영화나 골라줘"])
+def test_generic_recommendation_without_mood_or_key(service, message):
+    result = service.chat(request(message))
+    assert len(result.recommendations) == 2
+    assert result.recommendations[0].movie_id == "tt0000001"
+    assert result.mode == "demo"
+    assert result.preferences.mood == ""
+    assert result.warnings == []
+    assert all(movie.evidence_chunks and movie.source_url for movie in result.recommendations)
+
+
+def test_generic_request_preserves_constraints(service):
+    session = uuid4()
+    service.chat(request("90분 이내로 영화 추천해줘", session))
+    result = service.chat(request("영화를 찾아줘", session))
+    assert result.recommendations
+    assert all(movie.runtime <= 90 for movie in result.recommendations)
+
+
 def test_feedback_and_blank_input(service):
     feedback = Feedback(session_id=uuid4(), movie_id="tt0000001", rating=5, comment="좋았어요")
     service.feedback(feedback)
@@ -93,7 +112,7 @@ def test_feedback_and_blank_input(service):
 def test_failed_turn_rolls_back(service, monkeypatch):
     session = uuid4()
     service.chat(request("편안한 영화 90분 이내", session))
-    def fail(*args):
+    def fail(*args, **kwargs):
         raise RuntimeError("simulated embedding outage")
     with monkeypatch.context() as patch:
         patch.setattr(service.rag, "retrieve", fail)

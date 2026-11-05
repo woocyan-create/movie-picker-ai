@@ -33,6 +33,7 @@ class State(TypedDict, total=False):
     steps: list
     warnings: list
     result: dict
+    search_requested: bool
 
 
 class Pick(BaseModel):
@@ -90,7 +91,7 @@ class MovieService:
         graph.add_node("Tools", self.execute_tools)
         graph.add_node("CuratorAgent", self.curate)
         graph.add_edge(START, "EmotionAnalyzerAgent")
-        graph.add_conditional_edges("EmotionAnalyzerAgent", lambda s: "search" if any([s["preferences"]["mood"], s["preferences"]["genres"], s["preferences"]["title_query"]]) else "ask", {"search": "MovieRetrieverAgent", "ask": "CuratorAgent"})
+        graph.add_conditional_edges("EmotionAnalyzerAgent", lambda s: "search" if self.can_recommend(s) else "ask", {"search": "MovieRetrieverAgent", "ask": "CuratorAgent"})
         graph.add_conditional_edges("MovieRetrieverAgent", lambda s: "act" if s["pending"] else "finish", {"act": "Tools", "finish": "CuratorAgent"})
         graph.add_edge("Tools", "MovieRetrieverAgent")
         graph.add_edge("CuratorAgent", END)
@@ -130,7 +131,7 @@ class MovieService:
         else:
             groups = [("힐링", ["지친", "지쳐", "편안", "편하", "쉬고", "힐링", "잔잔", "피곤", "비가", "비도"]), ("스트레스", ["스트레스", "회사", "속상", "힘들", "화나"]), ("위로", ["우울", "외로", "슬퍼", "위로"]), ("웃음", ["웃", "코미디", "가볍"]), ("설렘", ["설레", "설렘", "데이트", "로맨스"]), ("몰입", ["몰입", "집중", "SF", "스릴러"]), ("통쾌함", ["통쾌", "액션"]), ("기쁨", ["기뻐", "기쁜", "행복"])]
             for mood, words in groups:
-                if any(w in text for w in words):
+                if any(bool(re.search(r"(?<!영)화나", text)) if w == "화나" else w in text for w in words):
                     p.mood = mood
                     break
             found = []
@@ -165,10 +166,15 @@ class MovieService:
                 p.title_query = imdb_id.group()
         if req.max_minutes is not None:
             p.max_minutes = req.max_minutes
-        warnings = [] if self.client else ["데모는 규칙 기반 도구 선택과 어휘 해시 임베딩을 사용합니다. LLM Tool Calling·의미 기반 RAG는 Live 모드에서 동작합니다."]
-        return {"preferences": p.model_dump(), "history": history, "pool": [], "candidates": [], "chunks": [], "rounds": 0, "pending": [], "tool_trace": [], "warnings": warnings,
+        search_requested = bool(re.search(r"(영화|작품).*(추천|찾|찯|골라|검색|보여)|(추천|찾|찯|골라|검색).*(영화|작품)|^\s*(추천해\s*줘|추천해\s*주세요|추천해주세요|아무거나|아무\s*영화)", text))
+        return {"preferences": p.model_dump(), "search_requested": search_requested, "history": history, "pool": [], "candidates": [], "chunks": [], "rounds": 0, "pending": [], "tool_trace": [], "warnings": [],
                 "messages": [{"role": "system", "content": RETRIEVER}, {"role": "user", "content": json.dumps({"message": text, "preferences": p.model_dump(), "history": history}, ensure_ascii=False)}],
                 "steps": ["감정·조건 분석 및 SQLite 대화 메모리 조회"]}
+
+    @staticmethod
+    def can_recommend(state):
+        p = state["preferences"]
+        return bool(state.get("search_requested") or p["mood"] or p["genres"] or p["title_query"] or p.get("max_minutes") or p.get("avoid"))
 
     @staticmethod
     def matches(movie, p):
@@ -195,8 +201,15 @@ class MovieService:
             """Embed and retrieve source-labelled evidence chunks for current candidates."""
             if not state["pool"]:
                 return {"count": 0, "message": "먼저 search_imdb로 후보를 확보하세요."}
-            chunks = self.rag.retrieve(state["pool"], query)
+            limit = 12 if self.client else min(240, len(state["pool"]) * 4)
+            chunks = self.rag.retrieve(state["pool"], query, limit=limit)
             order = list(dict.fromkeys(c["movie_id"] for c in chunks))
+            if not self.client:
+                # Demo combines retrieved evidence with transparent metadata ranking.
+                # An unspecified mood never blocks a direct request for recommendations.
+                preferred = {"힐링": {"가족", "코미디", "애니메이션"}, "위로": {"가족", "드라마"}, "웃음": {"코미디"}, "스트레스": {"코미디", "모험"}, "몰입": {"SF", "미스터리", "스릴러"}, "설렘": {"로맨스"}, "통쾌함": {"액션", "모험"}}.get(p.mood, set())
+                movies = {m["id"]: m for m in state["pool"]}
+                order.sort(key=lambda mid: (len(set(movies[mid]["genres"]) & preferred), movies[mid].get("votes") or 0, movies[mid].get("rating") or 0), reverse=True)
             state.update(chunks=chunks, candidates=[next(m for m in state["pool"] if m["id"] == mid) for mid in order[:3]])
             return {"count": len(chunks), "chunks": chunks}
 
@@ -260,7 +273,7 @@ class MovieService:
     def curate(self, state):
         p = Preferences.model_validate(state["preferences"])
         candidates, chunks, picks = state["candidates"], state["chunks"], []
-        if not any([p.mood, p.genres, p.title_query]):
+        if not self.can_recommend(state):
             message = "오늘은 편안하게 쉬고 싶으세요, 가볍게 웃고 싶으세요, 아니면 이야기에 푹 빠지고 싶으세요? 찾는 작품 이름을 알려주셔도 좋아요."
         elif not candidates:
             message = "검색 근거를 갖춘 후보를 찾지 못했어요. IMDb 데이터 준비 상태를 확인하거나 제목·시간·장르 조건을 바꿔보세요."
@@ -268,7 +281,7 @@ class MovieService:
             result = self.structured(Curation, [{"role": "system", "content": CURATOR}, {"role": "user", "content": json.dumps({"preferences": p.model_dump(), "candidates": candidates, "evidence_chunks": chunks}, ensure_ascii=False)}])
             picks, message = result.picks, result.message
         else:
-            message = "검색된 영화의 장르와 상영 시간을 바탕으로 골랐어요. IMDb에서 작품 정보를 더 살펴보세요."
+            message = "IMDb에서 관람 조건에 맞는 영화를 골랐어요. 마음에 드는 장르나 기분을 알려주시면 다음 추천에 반영할게요."
             picks = [Pick(movie_id=m["id"], reason=f"{', '.join(m['genres'])} 장르의 작품으로 관람 조건에 맞습니다. {m['note']}", tip="편안한 자리를 준비하고 집중할 시간을 확보해 보세요.", evidence_ids=[c["id"] for c in chunks if c["movie_id"] == m["id"]][:2]) for m in candidates[:2]]
         recommendations, seen = [], set()
         for pick in picks:
